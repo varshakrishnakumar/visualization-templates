@@ -1,3 +1,19 @@
+# This file is an R template to get a basic 3D interactive animation of user-specified data set up. 
+# The example files used in this (example) template are "mars_surface.png" for the model of the planet and "output.txt" for the plotting of the orbit.
+
+# User Inputs:
+#   file:  txt/csv file containing data
+#   radius:  Radius of planet
+#   img:  PNG containing surface of planet
+
+# Output:
+#   base:  Interactive animated plot of data
+#   surf:  Spherical Model of Planet
+
+# Version: August 2021
+# -------------------------------------------------
+
+
 # Library imports
 library(rgl)
 library(png)
@@ -7,9 +23,12 @@ library(dplyr)
 
 
 
-# Load output from a txt file and store in a dataframe
+# Specify relative path to file containing data
 # Check that data is correct to relevant planetary information, and note that the data should not have a header. If there is one, change header to TRUE.
-orbit <- read.table(file = "R\\output.txt", header = FALSE)
+file <- "R\\output.txt"
+
+# Load data from the txt file and store in a dataframe
+orbit <- read.table(file, header = FALSE)
 
 #read first column in table, store as time (seconds)
 time <- orbit[c(1)]
@@ -25,7 +44,6 @@ z <- orbit[c(4)]
 
 #store each column in a dataframe
 orb = data.frame(xax = x, yax = y, zax = z)
-
 xpos <- as.vector(x)
 ypos <- as.vector(y)
 zpos <- as.vector(z)
@@ -34,11 +52,12 @@ zpos <- as.vector(z)
 
 #Surface of Planet - Set Up
 
-Radius = 6787    #specifiy planet's radius
-# read a image containing surface of planet
+radius = 6787    # Specifiy planet's radius
+
+# Read an image containing surface of planet. Change relative path of PNG if necessary.
 img <- readPNG("R\\mars_surface.png")
 
-# convert PNG to a raster array
+# Convert PNG to a raster array
 if (exists("rasterImage")) { # can plot only in R 2.11.0 and higher
     plot(1:2, type='n')
     rasterImage(img,  1, 2, 2, 1, interpolate=FALSE)
@@ -49,9 +68,9 @@ img <- as.raster(img)
 # Spherical Coordinate system to set up sphere model for planet
 phi <- seq(0, pi, length = 200)
 theta <- seq(0, 2*pi, length = 200)
-x = Radius*outer(sin(phi),cos(theta))
-y = Radius*outer(sin(phi),sin(theta))
-z = Radius * (matrix(1, 200, 200)*cos(phi))
+x = radius*outer(sin(phi),cos(theta))
+y = radius*outer(sin(phi),sin(theta))
+z = radius * (matrix(1, 200, 200)*cos(phi))
 
 
 #Background of Visual; can comment out lines 58-83 if a white background is wanted
